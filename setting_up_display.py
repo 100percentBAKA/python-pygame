@@ -21,7 +21,7 @@ def main():
 
         # screen rendering 
         WIN.fill((0, 0, 0))
-        pygame.display.flip() ### updates the screen
+        pygame.display.update() ### updates the screen
 
 
 # calling the main function to start the game
