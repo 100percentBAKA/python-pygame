@@ -22,6 +22,10 @@ STANDING_SURFACE = pygame.transform.scale(pygame.image.load(os.path.join("jumpin
 JUMPING_SURFACE = pygame.transform.scale(pygame.image.load(os.path.join("jumping_logic", "mario_jumping.png")), (48, 64))
 BUG_SURFACE = pygame.transform.scale(pygame.image.load(os.path.join("jumping_logic", "bug.png")), (50, 50))
 bug_rect = BUG_SURFACE.get_rect(center=(WIDTH - 30, 665))
+CONSOLAS_FONT_PATH = os.path.join("jumping_logic", "Consolas.ttf")
+
+CONSOLAS = pygame.font.Font(CONSOLAS_FONT_PATH, 36)
+GAME_ENDED_TEXT = CONSOLAS.render("GAME ENDED", True, (255, 0, 0))
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Mario Jumping")
@@ -31,6 +35,7 @@ def render(surface, mario_rect):
     WIN.blit(surface, mario_rect)
     WIN.blit(BUG_SURFACE, bug_rect)
     pygame.display.flip()
+
 
 def main(): 
     running = True 
@@ -71,6 +76,10 @@ def main():
             WIN.blit(BUG_SURFACE, bug_rect)
 
         if mario_rect.colliderect(bug_rect): 
+            print("Collision")
+            text_rect = GAME_ENDED_TEXT.get_rect(center=(100, 100))
+            WIN.blit(GAME_ENDED_TEXT, text_rect)
+            pygame.time.delay(2000)
             pygame.quit()
         
         CLOCK.tick(FPS)
