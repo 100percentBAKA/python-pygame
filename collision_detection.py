@@ -16,10 +16,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Collision Test")
 
 red = pygame.Rect(0, 0, RECT_WIDTH//2, RECT_HEIGHT//2)
-
 player = pygame.Rect(WIDTH - RECT_WIDTH, 0, RECT_WIDTH, RECT_HEIGHT)
-
-
 
 def render(red, player): 
     WIN.fill(BLACK)
@@ -39,7 +36,7 @@ def main():
                 running = False
 
         clock.tick(FPS)
-        key_pressed = pygame.key.get_pressed()
+        key_pressed = pygame.key.get_pressed() ### returns a dictionary, if 8 is pressed 'pygame.K_8' = True and every thing else will be set to false 
         if key_pressed[pygame.K_UP] and player.y > 0: 
             player.y -= VEL
         elif key_pressed[pygame.K_DOWN] and player.y < HEIGHT - player.height: 
