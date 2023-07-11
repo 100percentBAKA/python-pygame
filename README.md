@@ -1,2 +1,2 @@
 # python-pygame
- sample programs for a beginner to start working with pygame module
+ sample porgrams for a beginner to get started in python pygame module 
