@@ -1,5 +1,5 @@
-import pygame 
-import os 
+import pygame
+import os
 
 pygame.init()
 
@@ -17,74 +17,89 @@ CLOCK = pygame.time.Clock()
 
 is_jumping = False
 
-BACKGROUND = pygame.image.load(os.path.join("jumping_logic", "background.png"))
-STANDING_SURFACE = pygame.transform.scale(pygame.image.load(os.path.join("jumping_logic", "mario_standing.png")), (48, 64))
-JUMPING_SURFACE = pygame.transform.scale(pygame.image.load(os.path.join("jumping_logic", "mario_jumping.png")), (48, 64))
-BUG_SURFACE = pygame.transform.scale(pygame.image.load(os.path.join("jumping_logic", "bug.png")), (50, 50))
-bug_rect = BUG_SURFACE.get_rect(center=(WIDTH - 30, 665))
-CONSOLAS_FONT_PATH = os.path.join("jumping_logic", "Consolas.ttf")
+FONT = pygame.font.Font(None, 50)  # none --> default text
+GAME_ENDED_TEXT = "GAME ENDED"
+TEXT_X_POSITION = WIDTH // 2 - 100
+TEXT_Y_POSITION = HEIGHT // 2
+TEXT_SURFACE = FONT.render(GAME_ENDED_TEXT, True, (255, 0, 0))
 
-CONSOLAS = pygame.font.Font(CONSOLAS_FONT_PATH, 36)
-GAME_ENDED_TEXT = CONSOLAS.render("GAME ENDED", True, (255, 0, 0))
+BACKGROUND = pygame.image.load(os.path.join("jumping_logic", "background.png"))
+STANDING_SURFACE = pygame.transform.scale(
+    pygame.image.load(os.path.join("jumping_logic", "mario_standing.png")), (48, 64)
+)
+JUMPING_SURFACE = pygame.transform.scale(
+    pygame.image.load(os.path.join("jumping_logic", "mario_jumping.png")), (48, 64)
+)
+BUG_SURFACE = pygame.transform.scale(
+    pygame.image.load(os.path.join("jumping_logic", "bug.png")), (50, 50)
+)
+bug_rect = BUG_SURFACE.get_rect(center=(WIDTH - 30, 665))
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Mario Jumping")
 
-def render(surface, mario_rect): 
+
+def render(surface, mario_rect):
     WIN.blit(BACKGROUND, (0, 0))
     WIN.blit(surface, mario_rect)
     WIN.blit(BUG_SURFACE, bug_rect)
     pygame.display.flip()
 
 
-def main(): 
-    running = True 
+def main():
+    running = True
 
     global is_jumping
     global X_POSITION
     global Y_POSITION
     global Y_VELOCITY
+    mario_rect = STANDING_SURFACE.get_rect(center=(X_POSITION, Y_POSITION))
 
-    while running :
-        for event in pygame.event.get(): 
-            if event.type == pygame.QUIT: 
-                running = False 
-        
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
         key_pressed = pygame.key.get_pressed()
-        if key_pressed[pygame.K_SPACE]: 
-            is_jumping = True 
-        
-        if is_jumping: 
+        if key_pressed[pygame.K_SPACE]:
+            is_jumping = True
+
+        if key_pressed[pygame.K_RIGHT] and X_POSITION < WIDTH - 30:
+            X_POSITION += VEL
+        elif key_pressed[pygame.K_LEFT] and X_POSITION > 15:
+            X_POSITION -= VEL
+
+        if is_jumping:
             Y_POSITION -= Y_VELOCITY
             Y_VELOCITY -= Y_GRAVITY
 
-            if Y_VELOCITY < -JUMP_HEIGHT: 
+            if Y_VELOCITY < -JUMP_HEIGHT:
                 Y_VELOCITY = JUMP_HEIGHT
-                is_jumping = False 
+                is_jumping = False
 
             mario_rect = JUMPING_SURFACE.get_rect(center=(X_POSITION, Y_POSITION))
             render(JUMPING_SURFACE, mario_rect)
-        else: 
+        else:
             mario_rect = STANDING_SURFACE.get_rect(center=(X_POSITION, Y_POSITION))
             render(STANDING_SURFACE, mario_rect)
-        
-        if bug_rect.x > 0: 
-            bug_rect.x -= VEL 
+
+        if bug_rect.x > 0:
+            bug_rect.x -= VEL
             WIN.blit(BUG_SURFACE, bug_rect)
-        else: 
+        else:
             bug_rect.x = WIDTH - 30
             WIN.blit(BUG_SURFACE, bug_rect)
 
-        if mario_rect.colliderect(bug_rect): 
+        if mario_rect.colliderect(bug_rect):
             print("Collision")
-            text_rect = GAME_ENDED_TEXT.get_rect(center=(100, 100))
-            WIN.blit(GAME_ENDED_TEXT, text_rect)
+            WIN.blit(TEXT_SURFACE, (TEXT_X_POSITION, TEXT_Y_POSITION))
+            pygame.display.flip()
             pygame.time.delay(2000)
             pygame.quit()
-        
+            return
+
         CLOCK.tick(FPS)
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
-
